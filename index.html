@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <title>Teste GEO</title>
+  </head>
+  <body>
+    <h1>Geo Localização</h1>
+    <input type="hidden" id='startLat'>
+    <input type="hidden" id='startLon'>
+    <div id='cidade'></div>
+  </body>
+</html>
+
+<script
+  src="https://code.jquery.com/jquery-3.6.0.js"
+  integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+  crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+window.onload = function() {
+  var startPos;
+  var geoOptions = {
+    maximumAge: 5 * 60 * 1000,
+  }
+
+  var geoSuccess = function(position) {
+    startPos = position;
+    document.getElementById('startLat').value = startPos.coords.latitude;
+    document.getElementById('startLon').value = startPos.coords.longitude;
+    // A $( document ).ready() block.
+$( document ).ready(function() {
+
+  var l1 = $('#startLat').val();
+   var l2 = $('#startLon').val();
+
+  $.ajax({
+     url : "ajax/geo.php",
+     type : 'post',
+     data : {
+          l1 : l1,
+          l2 : l2     },
+     beforeSend : function(){
+       
+     }
+})
+.done(function(msg){
+    //alert(msg);
+     $('#cidade').html(msg);
+})
+.fail(function(jqXHR, textStatus, msg){
+     alert(msg);
+});
+
+
+
+
+
+
+});
+
+  };
+  var geoError = function(error) {
+    console.log('Error occurred. Error code: ' + error.code);
+    // error.code can be:
+    //   0: unknown error
+    //   1: permission denied
+    //   2: position unavailable (error response from location provider)
+    //   3: timed out
+  };
+
+  navigator.geolocation.getCurrentPosition(geoSuccess, geoError, geoOptions);
+};
+
+</script>
